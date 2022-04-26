@@ -1,19 +1,21 @@
-import React, { Fragment, useState } from 'react';
-import styles from './index.module.css';
 import Router from 'next/router';
+import { Fragment, useState } from 'react';
+import styles from './index.module.css';
 
-
-function LoginPage() {
+function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const register = () => {
-        Router.push('/register');
+    const [rpass, setRpass] = useState('');
+    const login = () => {
+        Router.push('/');
     };
-    const loginHandle = (e: any) => {
+    const registerHandle = (e: any) => {
         e.preventDefault();
-        Router.push('/chat');
-        console.log(email, password);
-       
+        console.log(email, password, rpass);
+        Router.push('/');
+        setEmail('');
+        setPassword('');
+        setRpass('');
     };
 
     return (
@@ -21,20 +23,21 @@ function LoginPage() {
             <div className={styles.hero}>
                 <div className={styles.form_box}>
                     <div className={styles.btn_box}>
-                        <div id={styles.btnL}></div>
-                        <button type="button" className={styles.toggle_btn}>
-                            LogIn
-                        </button>
+                        <div id={styles.btnR}></div>
                         <button
                             type="button"
                             className={styles.toggle_btn}
-                            onClick={register}
+                            onClick={login}
                         >
+                            LogIn
+                        </button>
+                        <button type="button" className={styles.toggle_btn}>
                             Register
                         </button>
                     </div>
+
                     <form
-                        id={styles.login}
+                        id={styles.register}
                         className={styles.input_group}
                         onClick={(e) => {
                             e.preventDefault();
@@ -42,6 +45,7 @@ function LoginPage() {
                     >
                         <input
                             type="text"
+                            value={email}
                             className={styles.input_field}
                             placeholder="abc@gmail.com"
                             required
@@ -51,6 +55,7 @@ function LoginPage() {
                         />
                         <input
                             type="text"
+                            value={password}
                             className={styles.input_field}
                             placeholder="Password"
                             required
@@ -58,12 +63,22 @@ function LoginPage() {
                                 setPassword(e.target.value);
                             }}
                         />
+                        <input
+                            type="text"
+                            value={rpass}
+                            className={styles.input_field}
+                            placeholder="Repeat Password"
+                            required
+                            onChange={(e) => {
+                                setRpass(e.target.value);
+                            }}
+                        />
                         <button
                             type="submit"
                             className={styles.submit_btn}
-                            onClick={loginHandle}
+                            onClick={registerHandle}
                         >
-                            LogIn
+                            Register
                         </button>
                     </form>
                 </div>
@@ -72,4 +87,4 @@ function LoginPage() {
     );
 }
 
-export default LoginPage;
+export default RegisterPage;

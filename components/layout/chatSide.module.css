@@ -1,0 +1,34 @@
+.chat_container {
+    height: 79vh;
+    display: flex;
+    flex-direction: column;
+    /* box-sizing: border-box; */
+    border: 1px solid black;
+    border-left: none;
+    border-top: none;
+    border-bottom-right-radius: 20px;
+}
+.channel_chat {
+    height: 90%;
+}
+.chat_form {
+    height: 10%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-bottom: 4px;
+    margin-left: 3px;
+    margin-top: 2px;
+}
+
+.chat_input{
+    width: 80%;
+    margin-left: 3%;
+    border: 1px solid tomato;
+    background: transparent;
+    border-radius: 20px;
+}
+
+.send_btn{
+    margin-right: 3%;
+}

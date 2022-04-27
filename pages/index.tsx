@@ -2,7 +2,6 @@ import React, { Fragment, useState } from 'react';
 import styles from './index.module.css';
 import Router from 'next/router';
 
-
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -11,9 +10,17 @@ function LoginPage() {
     };
     const loginHandle = (e: any) => {
         e.preventDefault();
-        Router.push('/chat');
-        console.log(email, password);
-       
+        if (email.length === 0 || password.length === 0) {
+            alert('Invalid login');
+        }
+
+        Backendless.UserService.login(email, password, true)
+            .then(function (loggedInUser: any) {
+                Router.push('/chat');
+            })
+            .catch(function (error) {
+                console.log(error, 'Login Error');
+            });
     };
 
     return (

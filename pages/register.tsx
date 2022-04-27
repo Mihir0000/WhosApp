@@ -11,6 +11,20 @@ function RegisterPage() {
     };
     const registerHandle = (e: any) => {
         e.preventDefault();
+        if (email.length === 0 || password.length === 0 || password != rpass) {
+            alert('Invalid login');
+        }
+        const data = {
+            email,
+            password,
+        };
+        Backendless.UserService.register(data)
+            .then(function (registeredUser) {
+                console.log('Successfully register');
+            })
+            .catch(function (error) {
+                console.log('Error', error);
+            });
         console.log(email, password, rpass);
         Router.push('/');
         setEmail('');

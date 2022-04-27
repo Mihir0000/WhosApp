@@ -1,0 +1,36 @@
+.channel_btn {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 1s ease-in-out;
+}
+
+/* .channel_side {
+    padding: 30px;
+} */
+
+.channel_name{
+    color: rgb(16, 24, 16);
+    font: 500 18px 'sans-serif';
+    padding: 30px;
+    transition: all 1s ease-in-out;
+}
+
+.activeChannel{
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    color: rgb(16, 24, 16);
+    font: 500 18px 'sans-serif';
+    padding: 30px;
+    border-radius: 10px;
+    color: yellow;
+    transition: all 1s ease-in-out;
+    /* margin: 5px; */
+}
+
+.channel_btn:hover, .channel_name:hover, .activeChannel:hover{
+    background-color: tomato;
+    border-radius: 10px;
+    color: white;
+}
+

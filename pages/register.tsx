@@ -24,19 +24,16 @@ function RegisterPage() {
                 data.map((item: any) => {
                     totalEmail.push(item.email);
                 });
-                // console.log(totalEmail, 'email');
                 setTotalUser(totalEmail);
             }
         }
         userCall();
     }, []);
-    // console.log(totalUser, 'user');
 
     const registerHandle = (e: any) => {
         e.preventDefault();
-
         if (email.length === 0 || password.length === 0) {
-            notify('You Cannot put Empty Email or Password');
+            notify('Empty Email or Password are Invalid');
             return;
         } else if (password != rpass) {
             notify('Password Does Not Match');
@@ -47,10 +44,8 @@ function RegisterPage() {
             notify('Enter a Valid Email');
             return;
         }
-
         let exist = false;
         totalUser.map((item: string) => {
-            // console.log(item, email);
             if (item === email) {
                 exist = true;
                 // alert('Already Exist');

@@ -19,7 +19,7 @@ function LoginPage() {
     const loginHandle = (e: any) => {
         e.preventDefault();
         if (email.length === 0 || password.length === 0) {
-            notify('You Cannot put Empty Email or Password');
+            notify('Empty Email or Password are Invalid');
             return;
         }
         let valid = EmailValidator.validate(email);

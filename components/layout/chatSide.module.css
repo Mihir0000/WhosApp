@@ -49,6 +49,7 @@
     padding: 10px;
     border-radius: 5px;
     padding-top: 0;
+    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.418);
 }
 
 .sender_message{
@@ -60,6 +61,7 @@
     border-radius: 5px;
     margin-left: 50%;
     padding-top: 0;
+    box-shadow: -5px 10px 5px rgba(0, 0, 0, 0.418);
 }
 
 .chat_top{

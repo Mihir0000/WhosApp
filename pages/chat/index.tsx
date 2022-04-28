@@ -1,15 +1,42 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import styles from './chatPage.module.css';
 import ChannelSide from '../../components/layout/channelSide';
 import ChatSide from '../../components/layout/chatSide';
-import axios from 'axios';
-import Router from 'next/router';
 import AuthLoader from '../../components/Loader/AuthLoader';
 
 function ChatPage() {
     const [channel, setChannel] = useState('Channel_I');
     const [userName, setUserName] = useState('');
     const [loading, setLoading] = useState(true);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [search, setSearch] = useState('');
+    const [focus, setFocus] = useState(false);
+    const channelData = [
+        { channel: 'Channel_I' },
+        { channel: 'Channel_II' },
+        { channel: 'Channel_III' },
+        { channel: 'Channel_IV' },
+        { channel: 'Channel_V' },
+        { channel: 'Channel_VI' },
+        { channel: 'Channel_VII' },
+        { channel: 'Channel_VIII' },
+        { channel: 'Channel_IX' },
+        { channel: 'Channel_X' },
+    ];
+    const [c, setC] = useState(channelData);
+    const searchChannel = (word: string) => {
+        let x = channelData.filter((i: any) => {
+            return (
+                i.channel.toLowerCase().startsWith(word.toLowerCase()) ||
+                i.channel.toLowerCase().includes(word.toLowerCase())
+            );
+        });
+        return x;
+    };
+    useEffect(() => {
+        setC(searchChannel(search));
+    }, [search]);
+
     useEffect(() => {
         async function userCall() {
             const value = await localStorage.getItem(
@@ -26,31 +53,23 @@ function ChatPage() {
                 if (!!userID) {
                     setLoading(false);
                 }
-                // const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/Users/${userID}`;
-                // const { data } = await axios.get(url);
-                // // console.log(userID);
-                // setUserName(data.email);
-
-                // console.log(userName);
-                // console.log(data.email);
             }
         }
         userCall();
     });
     // console.log(userName);
 
-    const channelData = [
-        { channel: 'Channel_I' },
-        { channel: 'Channel_II' },
-        { channel: 'Channel_III' },
-        { channel: 'Channel_IV' },
-        { channel: 'Channel_V' },
-        { channel: 'Channel_VI' },
-        { channel: 'Channel_VII' },
-        { channel: 'Channel_VIII' },
-        { channel: 'Channel_IX' },
-        { channel: 'Channel_X' },
-    ];
+    const searchHandler = (e: any) => {
+        e.preventDefault();
+        if (focus) {
+            setSearch('');
+            inputRef.current?.blur();
+            setFocus(false);
+        } else {
+            inputRef.current?.focus();
+            setFocus(true);
+        }
+    };
     return (
         <Fragment>
             {loading ? (
@@ -62,27 +81,50 @@ function ChatPage() {
                             <div className={styles.left}>
                                 <div className={styles.channel_top}>
                                     <div>All Channel</div>
-                                    <div className={styles.search}>
+                                    <form
+                                        className={styles.search}
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                        }}
+                                    >
                                         <input
+                                            ref={inputRef}
                                             type="text"
+                                            value={search}
                                             className={styles.search_input}
                                             placeholder="Search Here ..."
+                                            onFocus={() => setFocus(true)}
+                                            onBlur={() => {
+                                                setTimeout(() => {
+                                                    setFocus(false);
+                                                }, 500);
+                                            }}
+                                            onChange={(e) => {
+                                                setSearch(e.target.value);
+                                                if (e.target.value === '') {
+                                                    setFocus(true);
+                                                }
+                                            }}
                                         />
-                                        <button type="button">click</button>
-                                    </div>
+                                        <button
+                                            type="button"
+                                            onClick={searchHandler}
+                                            className={styles.search_btn}
+                                        >
+                                            Clear
+                                        </button>
+                                    </form>
                                 </div>
                                 <div className={styles.channel_down}>
-                                    {channelData &&
-                                        channelData.map(
-                                            (item: any, index: number) => (
-                                                <ChannelSide
-                                                    key={index}
-                                                    channel_name={item.channel}
-                                                    setChannel={setChannel}
-                                                    channel={channel}
-                                                />
-                                            )
-                                        )}
+                                    {c &&
+                                        c.map((item: any, index: number) => (
+                                            <ChannelSide
+                                                key={index}
+                                                channel_name={item.channel}
+                                                setChannel={setChannel}
+                                                channel={channel}
+                                            />
+                                        ))}
                                 </div>
                             </div>
                             <div className={styles.right}>

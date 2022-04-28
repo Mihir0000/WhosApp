@@ -5,6 +5,7 @@ import axios from 'axios';
 import SendImg from '../images/send.png';
 import LogoutBtn from '../images/logout.png';
 import Image from 'next/image';
+import DoubbleTick from "../images/doubleTick.png"
 import Router from 'next/router';
 
 function ChatSide({ channel }: any) {
@@ -14,11 +15,12 @@ function ChatSide({ channel }: any) {
     const [userName, setUserName] = useState<string>('');
     const [chat, setChat] = useState('');
     const [msg, setMsg] = useState('new');
+    const [name, setName] = useState('');
 
     const response = useCallback(async () => {
         const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${channel}?pageSize=100&sortBy=%60time%60%20asc`;
         const { data } = await axios.get(url);
-        console.log(data);
+        // console.log(data);
         setChannelChat(data);
         if (data.length > 0) {
             setMsg(data[data.length - 1].message);
@@ -37,12 +39,14 @@ function ChatSide({ channel }: any) {
                 const { data } = await axios.get(url);
                 // console.log(userID);
                 setUserName(data.email);
+                const name2 = data.email.split('@');
+                setName(name2[0]);
             }
         }
         async function res() {
             const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${channel}?pageSize=100&sortBy=%60time%60%20asc`;
             const { data } = await axios.get(url);
-            console.log(data);
+            // console.log(data);
             setChannelChat(data);
             if (data.length > 0) {
                 setMsg(data[data.length - 1].message);
@@ -52,7 +56,7 @@ function ChatSide({ channel }: any) {
             var subscribeChannel = Backendless.Messaging.subscribe(channel);
             function onMessage(subMessage: any) {
                 setMsg(subMessage.message);
-                console.log(subMessage);
+                // console.log(subMessage);
             }
             subscribeChannel.addMessageListener(onMessage);
         };
@@ -64,6 +68,7 @@ function ChatSide({ channel }: any) {
     useEffect(() => {
         response();
     }, [channel, response, msg]);
+    // console.log(name);
 
     useEffect(() => {
         if (scrollingRef) {
@@ -75,12 +80,10 @@ function ChatSide({ channel }: any) {
     }, [channelChat]);
     const submitHandler = (e: any) => {
         e.preventDefault();
-        console.log('chat submitted');
-        console.log(chatRef.current.value);
 
         const message = chatRef.current.value;
-        const name = userName.split('@');
-        PublishChat({ channel, message, pubOptions: { sender: name[0] } });
+        // const name = userName.split('@');
+        PublishChat({ channel, message, pubOptions: { sender: name } });
         setChat('');
         console.log(channel);
 
@@ -91,7 +94,7 @@ function ChatSide({ channel }: any) {
             // console.log(subMessage.message);
             // setSubMsg(subMessage);
             setMsg(subMessage.message);
-            console.log(subMessage);
+            // console.log(subMessage);
         }
         subscribeChannel.addMessageListener(onMessage);
     };
@@ -103,7 +106,7 @@ function ChatSide({ channel }: any) {
         Backendless.UserService.logout()
             .then(function () {
                 console.log('Successfully LogOut');
-                Router.replace("/")
+                Router.replace('/');
             })
             .catch(function (error) {
                 console.log('Logout Error');
@@ -123,7 +126,14 @@ function ChatSide({ channel }: any) {
                             <div className={styles.no_chat}>No Chat Here</div>
                         ) : (
                             channelChat.map((item: any, index: number) => (
-                                <div className={styles.message_box} key={index}>
+                                <div
+                                    className={
+                                        name === item.sender
+                                            ? styles.sender_message
+                                            : styles.message_box
+                                    }
+                                    key={index}
+                                >
                                     <div className={styles.chat_top}>
                                         <div className={styles.sender}>
                                             From : {item.sender}
@@ -133,8 +143,18 @@ function ChatSide({ channel }: any) {
                                         </div>
                                     </div>
 
-                                    <div className={styles.message}>
-                                        {item.message}
+                                    <div className={styles.msg}>
+                                        <div className={styles.message}>
+                                            {item.message}
+                                        </div>
+                                        <div className={styles.tick}>
+                                            <Image
+                                                src={DoubbleTick}
+                                                alt="tick"
+                                                width="20%"
+                                                height="20%"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             ))

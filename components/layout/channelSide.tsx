@@ -1,11 +1,10 @@
 import styles from './channelSide.module.css';
 
 function channelSide({ channel, setChannel, channel_name }: any) {
-    
     const onClick = (e: any) => {
         // console.log(e.target.textContent);
         setChannel(e.target.textContent);
-        console.log(channel, channel_name);
+        // console.log(channel, channel_name);
     };
 
     return (

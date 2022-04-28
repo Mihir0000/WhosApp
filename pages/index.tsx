@@ -26,7 +26,10 @@ function LoginPage() {
         if(valid){
             Backendless.UserService.login(email, password, true)
                 .then(function (loggedInUser: any) {
-                    Router.push('/chat');
+                    notify("Successfully LoggedIn")
+                    setTimeout(()=>{
+                        Router.push('/chat');
+                    },500)
                 })
                 .catch(function (error) {
                     notify('Login Error');

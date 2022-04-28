@@ -35,8 +35,11 @@ function RegisterPage() {
     const registerHandle = (e: any) => {
         e.preventDefault();
 
-        if (email.length === 0 || password.length === 0 || password != rpass) {
+        if (email.length === 0 || password.length === 0) {
             notify('You Cannot put Empty Email or Password');
+            return;
+        } else if (password != rpass) {
+            notify('Password Does Not Match');
             return;
         }
         let valid = EmailValidator.validate(email);
@@ -47,11 +50,11 @@ function RegisterPage() {
 
         let exist = false;
         totalUser.map((item: string) => {
-            console.log(item, email);
+            // console.log(item, email);
             if (item === email) {
                 exist = true;
                 // alert('Already Exist');
-                console.log(exist);
+                // console.log(exist);
             }
         });
 
@@ -69,7 +72,7 @@ function RegisterPage() {
                 });
             console.log(email, password, rpass);
         } else {
-            notify('Already Exist');
+            alert('Already Exist');
         }
         Router.push('/');
         setEmail('');

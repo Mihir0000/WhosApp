@@ -1,0 +1,53 @@
+.loading {
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    display: grid;
+    place-items: center;
+    max-width: 100%;
+}
+
+.mid {
+    width: 10vmax;
+    height: 10vmax;
+    border-bottom: 5px solid rgba(0, 0, 0, 0.719);
+
+    border-radius: 50%;
+
+    animation: loadingRotate 800ms linear infinite;
+}
+
+.text_container {
+    position: fixed;
+    top: 65%;
+    left: 42.2%;
+}
+.text{
+    margin-bottom: 10px;
+    font-weight: 300;
+    font-size: 20px;
+}
+.btn {
+    background-color: rgb(115, 117, 117);
+    width: 60%;
+    margin-left: 20%;
+    padding: 10px;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    color: white;
+    transition: all 0.5s;
+}
+.btn:hover{
+    color: black;
+    background-color: white;
+    border: 1px solid tomato;
+    
+}
+
+@keyframes loadingRotate {
+    to {
+        transform: rotateZ(-360deg);
+    }
+}

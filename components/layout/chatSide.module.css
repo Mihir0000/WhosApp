@@ -43,11 +43,22 @@
 
 .message_box{
     width: 50%;
+    background: linear-gradient(to left, #f0fa65, #61dfff75);
+    margin: 5px;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    padding-top: 0;
+}
+
+.sender_message{
+    width: 50%;
     background: linear-gradient(to right, #f0fa65, #61dfff75);
     margin: 5px;
     border: 1px solid black;
     padding: 10px;
     border-radius: 5px;
+    margin-left: 50%;
     padding-top: 0;
 }
 
@@ -62,10 +73,19 @@
     font-size: 13px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+.msg{
+    display: flex;
+    justify-content: space-between;
+}
+.tick{
+    display: flex;
+   align-items: flex-end;
+}
 
 .message{
     font-family: 'Roboto', sans-serif;
     margin-top: 5px;
+    width: 90%;
 }
 .chat_form {
     height: 10%;

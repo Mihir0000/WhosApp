@@ -5,9 +5,10 @@ import axios from 'axios';
 
 function ChatSide({ channel }: any) {
     const chatRef = useRef<any>('');
-    const scrollingRef = useRef<string>('');
+    const scrollingRef = useRef<null | HTMLDivElement>(null);
     const [channelChat, setChannelChat] = useState([]);
     const [userName, setUserName] = useState<string>('');
+    // const [subMsg, setSubMsg] = useState<any>();
     const [chat, setChat] = useState('');
     const [msg, setMsg] = useState('new');
 
@@ -37,7 +38,7 @@ function ChatSide({ channel }: any) {
                 // console.log(data.email);
             }
         }
-        async function res(){
+        async function res() {
             const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${channel}?pageSize=100&sortBy=%60time%60%20asc`;
             const { data } = await axios.get(url);
             console.log(data);
@@ -66,11 +67,12 @@ function ChatSide({ channel }: any) {
     }, [channel, response, msg]);
 
     useEffect(() => {
-        const scrolling = () => {
-            scrollingRef &&
-                scrollingRef.current.scrollIntoView({ behavior: 'smooth' });
-        };
-        scrolling();
+        if (scrollingRef) {
+            const scrolling = () => {
+                scrollingRef.current?.scrollIntoView({ behavior: 'smooth' });
+            };
+            scrolling();
+        }
     }, [channelChat]);
     const submitHandler = (e: any) => {
         e.preventDefault();
@@ -110,27 +112,29 @@ function ChatSide({ channel }: any) {
         <Fragment>
             <div className={styles.chat_container}>
                 <div className={styles.channel_chat}>
-                    {channelChat.length === 0 ? (
-                        <div className={styles.no_chat}>No Chat Here</div>
-                    ) : (
-                        channelChat.map((item: any, index: number) => (
-                            <div className={styles.message_box} key={index}>
-                                <div className={styles.chat_top}>
-                                    <div className={styles.sender}>
-                                        From : {item.sender}
+                    <div>
+                        {channelChat.length === 0 ? (
+                            <div className={styles.no_chat}>No Chat Here</div>
+                        ) : (
+                            channelChat.map((item: any, index: number) => (
+                                <div className={styles.message_box} key={index}>
+                                    <div className={styles.chat_top}>
+                                        <div className={styles.sender}>
+                                            From : {item.sender}
+                                        </div>
+                                        <div className={styles.time}>
+                                            {readableTime(item.time)}
+                                        </div>
                                     </div>
-                                    <div className={styles.time}>
-                                        {readableTime(item.time)}
-                                    </div>
-                                </div>
 
-                                <div className={styles.message}>
-                                    {item.message}
+                                    <div className={styles.message}>
+                                        {item.message}
+                                    </div>
                                 </div>
-                            </div>
-                        ))
-                    )}
-                    <div ref={scrollingRef} />
+                            ))
+                        )}
+                    </div>
+                    <div ref={scrollingRef}></div>
                 </div>
                 <form className={styles.chat_form} onSubmit={submitHandler}>
                     <input

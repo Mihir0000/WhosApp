@@ -6,22 +6,22 @@
     margin-top: 30px;
     border-radius: 20px;
     display: grid;
-    grid-template-columns: 3fr 5fr;   
+    grid-template-columns: 3fr 5fr;
 }
 
-.left{
+.left {
     background-color: rgb(160, 252, 147);
     display: flex;
     flex-direction: column;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
 }
-.right{
+.right {
     display: flex;
     flex-direction: column;
 }
 
-.channel_top{
+.channel_top {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -30,7 +30,7 @@
     margin: 15px;
     padding-bottom: 15px;
     border-bottom: 1px dotted white;
-    width: 100%; 
+    width: 100%;
 }
 .channel_down {
     overflow-x: hidden;
@@ -47,4 +47,15 @@
     border-bottom: 1px dotted tomato;
     width: 100%;
     padding: 25px;
+}
+
+@media screen and (max-width: 700px) {
+    .container {
+        width: 95vw;
+        height: 100vh;
+    }
+    .left {
+        height: 90vh;
+    }
+    
 }

@@ -1,31 +1,76 @@
 import Router from 'next/router';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import styles from './index.module.css';
+import Backendless from 'backendless';
+import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
+import { notify } from './index';
+import * as EmailValidator from 'email-validator';
 
 function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rpass, setRpass] = useState('');
+    const [totalUser, setTotalUser] = useState<string[]>([]);
     const login = () => {
         Router.push('/');
     };
+    useEffect(() => {
+        async function userCall() {
+            const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/Users`;
+            const { data } = await axios.get(url);
+            if (data.length > 0) {
+                let totalEmail: string[] = [];
+                data.map((item: any) => {
+                    totalEmail.push(item.email);
+                });
+                // console.log(totalEmail, 'email');
+                setTotalUser(totalEmail);
+            }
+        }
+        userCall();
+    }, []);
+    // console.log(totalUser, 'user');
+
     const registerHandle = (e: any) => {
         e.preventDefault();
+
         if (email.length === 0 || password.length === 0 || password != rpass) {
-            alert('Invalid login');
+            notify('You Cannot put Empty Email or Password');
+            return;
         }
-        const data = {
-            email,
-            password,
-        };
-        Backendless.UserService.register(data)
-            .then(function (registeredUser) {
-                console.log('Successfully register');
-            })
-            .catch(function (error) {
-                console.log('Error', error);
-            });
-        console.log(email, password, rpass);
+        let valid = EmailValidator.validate(email);
+        if (!valid) {
+            notify('Enter a Valid Email');
+            return;
+        }
+
+        let exist = false;
+        totalUser.map((item: string) => {
+            console.log(item, email);
+            if (item === email) {
+                exist = true;
+                // alert('Already Exist');
+                console.log(exist);
+            }
+        });
+
+        if (exist === false) {
+            const data = {
+                email,
+                password,
+            };
+            Backendless.UserService.register(data)
+                .then(function (registeredUser) {
+                    notify('Successfully Register');
+                })
+                .catch(function (error) {
+                    // notify('Internl Error');
+                });
+            console.log(email, password, rpass);
+        } else {
+            notify('Already Exist');
+        }
         Router.push('/');
         setEmail('');
         setPassword('');
@@ -58,17 +103,17 @@ function RegisterPage() {
                         }}
                     >
                         <input
-                            type="text"
+                            type="email"
                             value={email}
                             className={styles.input_field}
-                            placeholder="abc@gmail.com"
+                            placeholder="abc@xyz.com"
                             required
                             onChange={(e) => {
                                 setEmail(e.target.value);
                             }}
                         />
                         <input
-                            type="text"
+                            type="password"
                             value={password}
                             className={styles.input_field}
                             placeholder="Password"
@@ -78,7 +123,7 @@ function RegisterPage() {
                             }}
                         />
                         <input
-                            type="text"
+                            type="password"
                             value={rpass}
                             className={styles.input_field}
                             placeholder="Repeat Password"
@@ -96,6 +141,7 @@ function RegisterPage() {
                         </button>
                     </form>
                 </div>
+                <ToastContainer />
             </div>
         </Fragment>
     );

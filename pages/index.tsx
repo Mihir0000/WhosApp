@@ -1,26 +1,40 @@
 import React, { Fragment, useState } from 'react';
 import styles from './index.module.css';
 import Router from 'next/router';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as EmailValidator from 'email-validator';
+
+export const notify = (text: string) => {
+    toast(text);
+};
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
     const register = () => {
         Router.push('/register');
     };
     const loginHandle = (e: any) => {
         e.preventDefault();
         if (email.length === 0 || password.length === 0) {
-            alert('Invalid login');
+            notify('You Cannot put Empty Email or Password');
+            return;
         }
-
-        Backendless.UserService.login(email, password, true)
-            .then(function (loggedInUser: any) {
-                Router.push('/chat');
-            })
-            .catch(function (error) {
-                console.log(error, 'Login Error');
-            });
+        let valid = EmailValidator.validate(email);
+        if(valid){
+            Backendless.UserService.login(email, password, true)
+                .then(function (loggedInUser: any) {
+                    Router.push('/chat');
+                })
+                .catch(function (error) {
+                    notify('Login Error');
+                });
+        }
+        else{
+            notify('Enter a valid Email')
+        }  
     };
 
     return (
@@ -48,16 +62,16 @@ function LoginPage() {
                         }}
                     >
                         <input
-                            type="text"
+                            type="email"
                             className={styles.input_field}
-                            placeholder="abc@gmail.com"
+                            placeholder="abc@xyz.com"
                             required
                             onChange={(e) => {
                                 setEmail(e.target.value);
                             }}
                         />
                         <input
-                            type="text"
+                            type="password"
                             className={styles.input_field}
                             placeholder="Password"
                             required
@@ -75,6 +89,7 @@ function LoginPage() {
                     </form>
                 </div>
             </div>
+            <ToastContainer/>
         </Fragment>
     );
 }

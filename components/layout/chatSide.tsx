@@ -2,13 +2,16 @@ import { Fragment, useState, useRef, useEffect, useCallback } from 'react';
 import styles from './chatSide.module.css';
 import PublishChat from '../pubSub/PublishChat';
 import axios from 'axios';
+import SendImg from '../images/send.png';
+import LogoutBtn from '../images/logout.png';
+import Image from 'next/image';
+import Router from 'next/router';
 
 function ChatSide({ channel }: any) {
     const chatRef = useRef<any>('');
     const scrollingRef = useRef<null | HTMLDivElement>(null);
     const [channelChat, setChannelChat] = useState([]);
     const [userName, setUserName] = useState<string>('');
-    // const [subMsg, setSubMsg] = useState<any>();
     const [chat, setChat] = useState('');
     const [msg, setMsg] = useState('new');
 
@@ -34,8 +37,6 @@ function ChatSide({ channel }: any) {
                 const { data } = await axios.get(url);
                 // console.log(userID);
                 setUserName(data.email);
-                // console.log(userName);
-                // console.log(data.email);
             }
         }
         async function res() {
@@ -61,9 +62,7 @@ function ChatSide({ channel }: any) {
         subscribe();
     }, [channel]);
     useEffect(() => {
-        // setTimeout(() => {
         response();
-        // }, 0);
     }, [channel, response, msg]);
 
     useEffect(() => {
@@ -100,17 +99,24 @@ function ChatSide({ channel }: any) {
         const date = new Date(time);
         return date.toLocaleString();
     };
-    // setInterval(()=>{
-    //     if (totalChat != channelChat) {
-    //         setTotalChat(channelChat);
-    //     }
-    // },100)
-    // useEffect(() => {
-    //     console.log('Change Whole Chat');
-    // }, [channelChat]);
+    const logoutHandler = () => {
+        Backendless.UserService.logout()
+            .then(function () {
+                console.log('Successfully LogOut');
+                Router.replace("/")
+            })
+            .catch(function (error) {
+                console.log('Logout Error');
+            });
+    };
     return (
         <Fragment>
             <div className={styles.chat_container}>
+                <div className={styles.logout} onClick={logoutHandler}>
+                    <button className={styles.logout_btn}>
+                        <Image src={LogoutBtn} alt="logout" />
+                    </button>
+                </div>
                 <div className={styles.channel_chat}>
                     <div>
                         {channelChat.length === 0 ? (
@@ -152,7 +158,12 @@ function ChatSide({ channel }: any) {
                         // onClick={(e) => console.log('clicked')}
                         className={styles.send_btn}
                     >
-                        send me
+                        <Image
+                            src={SendImg}
+                            alt="send"
+                            width="35%"
+                            height="35%"
+                        />
                     </button>
                 </form>
             </div>

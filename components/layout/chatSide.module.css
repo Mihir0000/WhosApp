@@ -13,6 +13,34 @@
     overflow-y: scroll;
 }
 
+.logout{
+    position: fixed;
+    right: 12%;
+    top: 6.5%;
+    cursor: pointer;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 10px;
+    transition: all 0.5s;
+
+}
+
+.logout_btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    background:transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.logout:hover {
+    background-color: red;
+    transform: scale(1.1);
+}
+
 .message_box{
     width: 50%;
     background: linear-gradient(to right, #f0fa65, #61dfff75);
@@ -60,6 +88,15 @@
 
 .send_btn {
     margin-right: 3%;
+    background: transparent;
+    cursor: pointer;
+    border: 1px solid tomato;
+    border-radius: 20%;
+    transition: all 0.5s;
+}
+.send_btn:hover{
+    background-color: green;
+    border: 1px solid green;
 }
 
 .no_chat {
@@ -72,4 +109,10 @@
     margin-top: 30px;
     border-radius: 5px;
     background: linear-gradient(to Right, #61dfff75, #f0fa65);
+}
+
+@media screen and (max-width:700px){
+    .logout{
+        right: 5%;
+    }
 }

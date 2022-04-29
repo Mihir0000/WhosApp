@@ -28,6 +28,17 @@
     left: 10%;
 }
 
+.username {
+    position: fixed;
+    /* top: 10%; */
+    /* left: 5%; */
+    margin-top: 25px;
+    margin-left: 10px;
+    border: 1px solid blue;
+    text-transform: capitalize;
+    padding: 3px;
+}
+
 #left {
     background-color: rgb(160, 252, 147);
     display: flex;

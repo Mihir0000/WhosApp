@@ -3,6 +3,7 @@ import styles from './chatPage.module.css';
 import ChannelSide from '../../components/layout/channelSide';
 import ChatSide from '../../components/layout/chatSide';
 import AuthLoader from '../../components/Loader/AuthLoader';
+import axios from 'axios';
 
 function ChatPage() {
     const [channel, setChannel] = useState('Channel_I');
@@ -11,6 +12,7 @@ function ChatPage() {
     const inputRef = useRef<HTMLInputElement>(null);
     const [search, setSearch] = useState('');
     const [focus, setFocus] = useState(false);  
+    const [name, setName] = useState('')
     const channelData = [
         { channel: 'Channel_I' },
         { channel: 'Channel_II' },
@@ -53,6 +55,10 @@ function ChatPage() {
                 if (!!userID) {
                     setLoading(false);
                 }
+                const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/Users/${userID}`;
+                const { data } = await axios.get(url);
+                const name2 = data.email.split('@');
+                setName(name2[0]);
             }
         }
         userCall();
@@ -128,6 +134,7 @@ function ChatPage() {
                                 </div>
                             </div>
                             <div id={styles.right}>
+                                <div className={styles.username}>Hi, {name}</div>
                                 <div className={styles.chat_top}>{channel}</div>
                                 <div className={styles.chat_down}>
                                     <ChatSide channel={channel} />

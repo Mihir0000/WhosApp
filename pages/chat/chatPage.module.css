@@ -21,14 +21,21 @@
     border: 1px solid black;
 }
 
-.left {
+.collaps_btn {
+    position: fixed;
+    /* display: none; */
+    top: 10%;
+    left: 10%;
+}
+
+#left {
     background-color: rgb(160, 252, 147);
     display: flex;
     flex-direction: column;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
 }
-.right {
+#right {
     display: flex;
     flex-direction: column;
 }
@@ -89,9 +96,10 @@
 @media screen and (max-width: 700px) {
     .container {
         width: 95vw;
-        height: 100vh;
+        /* height: 100vh; */
+        display: flex;
     }
-    .left {
+    #left {
         height: 90vh;
     }
 }

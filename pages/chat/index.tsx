@@ -10,7 +10,7 @@ function ChatPage() {
     const [loading, setLoading] = useState(true);
     const inputRef = useRef<HTMLInputElement>(null);
     const [search, setSearch] = useState('');
-    const [focus, setFocus] = useState(false);
+    const [focus, setFocus] = useState(false);  
     const channelData = [
         { channel: 'Channel_I' },
         { channel: 'Channel_II' },
@@ -78,7 +78,7 @@ function ChatPage() {
                 <Fragment>
                     <div className={styles.bg}>
                         <div className={styles.container}>
-                            <div className={styles.left}>
+                            <div id={styles.left}>
                                 <div className={styles.channel_top}>
                                     <div>All Channel</div>
                                     <form
@@ -127,7 +127,7 @@ function ChatPage() {
                                         ))}
                                 </div>
                             </div>
-                            <div className={styles.right}>
+                            <div id={styles.right}>
                                 <div className={styles.chat_top}>{channel}</div>
                                 <div className={styles.chat_down}>
                                     <ChatSide channel={channel} />

@@ -103,7 +103,7 @@
 .chat_input {
     width: 80%;
     margin-left: 3%;
-    border: 1px solid tomato;
+    border: 1px solid black;
     background: transparent;
     border-radius: 20px;
 }
@@ -112,7 +112,7 @@
     margin-right: 3%;
     background: transparent;
     cursor: pointer;
-    border: 1px solid tomato;
+    border: 1px solid black;
     border-radius: 20%;
     transition: all 0.5s;
 }

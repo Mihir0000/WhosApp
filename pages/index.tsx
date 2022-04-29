@@ -67,7 +67,7 @@ function LoginPage() {
                         <input
                             type="email"
                             className={styles.input_field}
-                            placeholder="abc@xyz.com"
+                            placeholder="Ex: gmail@xyz.com"
                             required
                             onChange={(e) => {
                                 setEmail(e.target.value);

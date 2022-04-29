@@ -104,7 +104,7 @@ function RegisterPage() {
                             type="email"
                             value={email}
                             className={styles.input_field}
-                            placeholder="Ex: gmail@xyz.com"
+                            placeholder="abc@xyz.com"
                             required
                             onChange={(e) => {
                                 setEmail(e.target.value);

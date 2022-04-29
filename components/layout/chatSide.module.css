@@ -44,24 +44,24 @@
 .message_box{
     width: 50%;
     background: linear-gradient(to left, #f0fa65, #61dfff75);
-    margin: 5px;
+    margin: 10px;
     border: 1px solid black;
     padding: 10px;
     border-radius: 5px;
     padding-top: 0;
-    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.418);
+    box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.418);
 }
 
 .sender_message{
     width: 50%;
     background: linear-gradient(to right, #f0fa65, #61dfff75);
-    margin: 5px;
+    margin: 10px;
     border: 1px solid black;
     padding: 10px;
     border-radius: 5px;
     margin-left: 50%;
     padding-top: 0;
-    box-shadow: -5px 10px 5px rgba(0, 0, 0, 0.418);
+    box-shadow: -2px 5px 5px rgba(0, 0, 0, 0.418);
 }
 
 .chat_top{

@@ -17,6 +17,8 @@
     border-radius: 20px;
     display: grid;
     grid-template-columns: 3fr 5fr;
+    box-shadow: 10px 10px 30px black;
+    border: 1px solid black;
 }
 
 .left {

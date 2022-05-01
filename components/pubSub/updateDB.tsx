@@ -1,14 +1,14 @@
 interface updateData {
     sender: string;
     message: string;
-    channel: string;
+    receiver: string;
     time: number;
 }
-function updateDB({ sender, message, channel, time }: updateData) {
+function updateDB({ sender, message, receiver, time }: updateData) {
     try {
         setTimeout(() => {
-            const data = { sender, message, channel, time };
-            Backendless.Data.of(channel)
+            const data = { sender, message, receiver, time };
+            Backendless.Data.of(receiver)
                 .save(data)
                 .then(function (saveObject) {
                     console.log('Data Saved');

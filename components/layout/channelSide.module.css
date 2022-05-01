@@ -10,14 +10,15 @@
     padding: 30px;
 } */
 
-.channel_name{
+.channel_name {
     color: rgb(16, 24, 16);
     font: 500 18px 'sans-serif';
     padding: 30px;
     transition: all 1s ease-in-out;
+    text-transform: capitalize;
 }
 
-.activeChannel{
+.activeChannel {
     background: linear-gradient(to right, #ff74a3, #ffca61);
     color: rgb(16, 24, 16);
     font: 500 18px 'sans-serif';
@@ -25,12 +26,14 @@
     border-radius: 10px;
     color: darkblue;
     transition: all 1s ease-in-out;
+    text-transform: capitalize;
     /* margin: 5px; */
 }
 
-.channel_btn:hover, .channel_name:hover, .activeChannel:hover{
+.channel_btn:hover,
+.channel_name:hover,
+.activeChannel:hover {
     background-color: rgb(252, 134, 113);
     border-radius: 10px;
     color: white;
 }
-

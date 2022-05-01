@@ -19,16 +19,20 @@ function RegisterPage() {
         async function userCall() {
             const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/Users`;
             const { data } = await axios.get(url);
+            // console.log(data);
+
             if (data.length > 0) {
-                let totalEmail: string[] = [];
+                let totalName: string[] = [];
                 data.map((item: any) => {
-                    totalEmail.push(item.email);
+                    const name = item.email.split('@')[0];
+                    totalName.push(name);
                 });
-                setTotalUser(totalEmail);
+                setTotalUser(totalName);
             }
         }
         userCall();
     }, []);
+    // console.log(totalUser);
 
     const registerHandle = (e: any) => {
         e.preventDefault();
@@ -39,25 +43,33 @@ function RegisterPage() {
             notify('Password Does Not Match');
             return;
         }
+        const name = email.split('@')[0];
+        let exist = false;
+        totalUser.map((item: string) => {
+            if (item === name) {
+                exist = true;
+                alert('Already Exist');
+                return;
+                // console.log(exist);
+            }
+        });
         let valid = EmailValidator.validate(email);
         if (!valid) {
             notify('Enter a Valid Email');
             return;
         }
-        let exist = false;
-        totalUser.map((item: string) => {
-            if (item === email) {
-                exist = true;
-                // alert('Already Exist');
-                // console.log(exist);
-            }
-        });
 
         if (exist === false) {
             const data = {
                 email,
                 password,
             };
+            const time = new Date().getTime();
+            const dbData = {
+                email,
+                time
+            }
+            const name = email.split('@')[0];
             Backendless.UserService.register(data)
                 .then(function (registeredUser) {
                     notify('Successfully Register');
@@ -65,10 +77,17 @@ function RegisterPage() {
                 .catch(function (error) {
                     // notify('Internl Error');
                 });
+            Backendless.Data.of(name)
+                .save(dbData)
+                .then(function (savedObject) {
+                    console.log('new Contact instance has been saved');
+                })
+                .catch(function (error) {
+                    console.log('an error has occurred ' + error.message);
+                });
             console.log(email, password, rpass);
-        } else {
-            alert('Already Exist');
         }
+
         Router.push('/');
         setEmail('');
         setPassword('');
@@ -101,7 +120,7 @@ function RegisterPage() {
                         }}
                     >
                         <input
-                            type="email"
+                            type="text"
                             value={email}
                             className={styles.input_field}
                             placeholder="abc@xyz.com"

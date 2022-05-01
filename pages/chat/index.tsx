@@ -1,42 +1,60 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './chatPage.module.css';
 import ChannelSide from '../../components/layout/channelSide';
 import ChatSide from '../../components/layout/chatSide';
 import AuthLoader from '../../components/Loader/AuthLoader';
 import axios from 'axios';
 
-function ChatPage() {
-    const [channel, setChannel] = useState('Channel_I');
-    const [userName, setUserName] = useState('');
+function ChatPage({ channelData }: any) {
+    const [channel, setChannel] = useState('aakash');
+    const [userName, setUserName] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const inputRef = useRef<HTMLInputElement>(null);
     const [search, setSearch] = useState('');
-    const [focus, setFocus] = useState(false);  
-    const [name, setName] = useState('')
-    const channelData = [
-        { channel: 'Channel_I' },
-        { channel: 'Channel_II' },
-        { channel: 'Channel_III' },
-        { channel: 'Channel_IV' },
-        { channel: 'Channel_V' },
-        { channel: 'Channel_VI' },
-        { channel: 'Channel_VII' },
-        { channel: 'Channel_VIII' },
-        { channel: 'Channel_IX' },
-        { channel: 'Channel_X' },
-    ];
-    const [c, setC] = useState(channelData);
+    const [focus, setFocus] = useState(false);
+    const [name, setName] = useState('');
+    const [newData, setNewData] = useState<any>();
+    const [searchChannelData, setSearchChannelData] = useState(channelData);
+    // const [newUser, setNewUser] = useState([]);
+    // console.log(channelData);
+
+    // const channelData = [
+    //     { channel: 'Channel_I' },
+    //     { channel: 'Channel_II' },
+    //     { channel: 'Channel_III' },
+    //     { channel: 'Channel_IV' },
+    //     { channel: 'Channel_V' },
+    //     { channel: 'Channel_VI' },
+    //     { channel: 'Channel_VII' },
+    //     { channel: 'Channel_VIII' },
+    //     { channel: 'Channel_IX' },
+    //     { channel: 'Channel_X' },
+    // ];
+    useCallback(async () => {
+        const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/Users`;
+        const { data } = await axios.get(url);
+        setNewData(data);
+    }, [newData]);
+
     const searchChannel = (word: string) => {
-        let x = channelData.filter((i: any) => {
-            return (
-                i.channel.toLowerCase().startsWith(word.toLowerCase()) ||
-                i.channel.toLowerCase().includes(word.toLowerCase())
-            );
-        });
-        return x;
+        if (channelData) {
+            let x = channelData.filter((i: any) => {
+                return (
+                    i.channelName
+                        .toLowerCase()
+                        .startsWith(word.toLowerCase()) ||
+                    i.channelName.toLowerCase().includes(word.toLowerCase())
+                );
+            });
+            x.sort(function (a: any, b: any) {
+                return a.channelName.localeCompare(b.channelName);
+            });
+            return x;
+        }
+        return;
     };
     useEffect(() => {
-        setC(searchChannel(search));
+        setSearchChannelData(searchChannel(search));
     }, [search]);
 
     useEffect(() => {
@@ -44,11 +62,6 @@ function ChatPage() {
             const value = await localStorage.getItem(
                 'Backendless_2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00'
             );
-            // console.log(value.length);
-
-            // if (value !== null || value.length > 3) {
-            //     Router.replace('/');
-            // }
             if (value) {
                 const singleUserData = JSON.parse(value);
                 const { 'current-user-id': userID } = singleUserData;
@@ -62,8 +75,18 @@ function ChatPage() {
             }
         }
         userCall();
-    });
-    // console.log(userName);
+        // totalUserCall();
+    }, []);
+
+    // useEffect(() => {
+    //     async function newUsers() {
+    //         const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/Users`;
+    //         const { data } = await axios.get(url);
+    //         setNewData(data);
+    //         setNewUser(data);
+    //     }
+    //     newUsers();
+    // }, [newUser]);
 
     const searchHandler = (e: any) => {
         e.preventDefault();
@@ -86,7 +109,7 @@ function ChatPage() {
                         <div className={styles.container}>
                             <div id={styles.left}>
                                 <div className={styles.channel_top}>
-                                    <div>All Channel</div>
+                                    <div>All Contacts</div>
                                     <form
                                         className={styles.search}
                                         onSubmit={(e) => {
@@ -122,22 +145,28 @@ function ChatPage() {
                                     </form>
                                 </div>
                                 <div className={styles.channel_down}>
-                                    {c &&
-                                        c.map((item: any, index: number) => (
-                                            <ChannelSide
-                                                key={index}
-                                                channel_name={item.channel}
-                                                setChannel={setChannel}
-                                                channel={channel}
-                                            />
-                                        ))}
+                                    {searchChannelData &&
+                                        searchChannelData.map(
+                                            (item: any, index: number) => (
+                                                <ChannelSide
+                                                    key={index}
+                                                    channel_name={
+                                                        item.channelName
+                                                    }
+                                                    setChannel={setChannel}
+                                                    channel={channel}
+                                                />
+                                            )
+                                        )}
                                 </div>
                             </div>
                             <div id={styles.right}>
-                                <div className={styles.username}>Hi, {name}</div>
+                                <div className={styles.username}>
+                                    Hi, {name}
+                                </div>
                                 <div className={styles.chat_top}>{channel}</div>
                                 <div className={styles.chat_down}>
-                                    <ChatSide channel={channel} />
+                                    <ChatSide receiver={channel} />
                                 </div>
                             </div>
                         </div>
@@ -146,5 +175,33 @@ function ChatPage() {
             )}
         </Fragment>
     );
+}
+
+export async function getStaticProps() {
+    const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/Users`;
+    const { data } = await axios.get(url);
+    let channelData: {
+        channelName: string;
+        email: string;
+        objectId: string;
+    }[] = [];
+    if (data.length > 0) {
+        data.map((item: any) => {
+            let mail = item.email.split('@');
+            channelData.push({
+                channelName: mail[0],
+                email: item.email,
+                objectId: item.objectId,
+            });
+        });
+        // setUserName(totalEmail);
+        // setChannelData(totalEmail);
+    }
+    // console.log(data);
+    return {
+        props: {
+            channelData,
+        },
+    };
 }
 export default ChatPage;

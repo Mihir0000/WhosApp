@@ -5,10 +5,10 @@ import axios from 'axios';
 import SendImg from '../images/send.png';
 import LogoutBtn from '../images/logout.png';
 import Image from 'next/image';
-import DoubbleTick from "../images/doubleTick.png"
+import DoubbleTick from '../images/doubleTick.png';
 import Router from 'next/router';
 
-function ChatSide({ channel }: any) {
+function ChatSide({ receiver }: any) {
     const chatRef = useRef<any>('');
     const scrollingRef = useRef<null | HTMLDivElement>(null);
     const [channelChat, setChannelChat] = useState([]);
@@ -17,15 +17,51 @@ function ChatSide({ channel }: any) {
     const [msg, setMsg] = useState('new');
     const [name, setName] = useState('');
 
-    const response = useCallback(async () => {
-        const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${channel}?pageSize=100&sortBy=%60time%60%20asc`;
-        const { data } = await axios.get(url);
-        // console.log(data);
-        setChannelChat(data);
-        if (data.length > 0) {
-            setMsg(data[data.length - 1].message);
+    const callFunction = async () => {
+        const reveiverUrl = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${receiver}?pageSize=100&sortBy=%60time%60%20asc`;
+        const { data: receiverData } = await axios.get(reveiverUrl);
+        // console.log('receiverdata', receiverData);
+
+        if (name) {
+            const senderUrl = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${name}?pageSize=100&sortBy=%60time%60%20asc`;
+            var { data: senderData } = await axios.get(senderUrl);
+            // console.log('senderdata', senderData);
         }
-    }, [channel]);
+
+        // console.log('receiver', receiver);
+        // console.log('sender', name);
+
+        const twoUserData: any = [];
+
+        receiverData.map((item: any) => {
+            if (
+                (item.sender === name && item.receiver === receiver) ||
+                (item.receiver === name && item.sender === receiver)
+            ) {
+                twoUserData.push(item);
+            }
+        });
+        if (senderData) {
+            senderData.map((item: any) => {
+                if (
+                    (item.sender === name && item.receiver === receiver) ||
+                    (item.receiver === name && item.sender === receiver)
+                ) {
+                    twoUserData.push(item);
+                }
+            });
+        }
+
+        twoUserData.sort(function (a: any, b: any) {
+            return a.created - b.created;
+        });
+        // console.log('data2user', twoUserData);
+        setChannelChat(twoUserData);
+    };
+
+    const response = useCallback(() => {
+        callFunction();
+    }, [receiver]);
 
     useEffect(() => {
         async function userCall() {
@@ -43,31 +79,22 @@ function ChatSide({ channel }: any) {
                 setName(name2[0]);
             }
         }
-        async function res() {
-            const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${channel}?pageSize=100&sortBy=%60time%60%20asc`;
-            const { data } = await axios.get(url);
-            // console.log(data);
-            setChannelChat(data);
-            if (data.length > 0) {
-                setMsg(data[data.length - 1].message);
-            }
-        }
+
         const subscribe = () => {
-            var subscribeChannel = Backendless.Messaging.subscribe(channel);
+            var subscribeChannel = Backendless.Messaging.subscribe(receiver);
             function onMessage(subMessage: any) {
                 setMsg(subMessage.message);
                 // console.log(subMessage);
             }
             subscribeChannel.addMessageListener(onMessage);
         };
-
-        res();
+        callFunction();
         userCall();
         subscribe();
-    }, [channel]);
+    }, [receiver]);
     useEffect(() => {
         response();
-    }, [channel, response, msg]);
+    }, [receiver, response, msg]);
     // console.log(name);
 
     useEffect(() => {
@@ -83,18 +110,12 @@ function ChatSide({ channel }: any) {
 
         const message = chatRef.current.value;
         // const name = userName.split('@');
-        PublishChat({ channel, message, pubOptions: { sender: name } });
+        PublishChat({ receiver, message, pubOptions: { sender: name } });
         setChat('');
-        console.log(channel);
 
-        var subscribeChannel = Backendless.Messaging.subscribe(channel);
+        var subscribeChannel = Backendless.Messaging.subscribe(receiver);
         function onMessage(subMessage: any) {
-            // console.log('Message received: ' + subMessage);
-            // console.log('Message Received');
-            // console.log(subMessage.message);
-            // setSubMsg(subMessage);
             setMsg(subMessage.message);
-            // console.log(subMessage);
         }
         subscribeChannel.addMessageListener(onMessage);
     };
@@ -112,6 +133,9 @@ function ChatSide({ channel }: any) {
                 console.log('Logout Error');
             });
     };
+    // console.log('sender', name);
+    // console.log('receiver', receiver);
+
     return (
         <Fragment>
             <div className={styles.chat_container}>

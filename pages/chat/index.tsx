@@ -15,7 +15,7 @@ function ChatPage({ channelData }: any) {
     const [name, setName] = useState('');
     const [newData, setNewData] = useState<any>();
     const [searchChannelData, setSearchChannelData] = useState(channelData);
-    // const [newUser, setNewUser] = useState([]);
+    const [newUser, setNewUser] = useState([]);
     // console.log(channelData);
 
     // const channelData = [
@@ -35,6 +35,7 @@ function ChatPage({ channelData }: any) {
         const { data } = await axios.get(url);
         setNewData(data);
     }, [newData]);
+
 
     const searchChannel = (word: string) => {
         if (channelData) {
@@ -85,8 +86,11 @@ function ChatPage({ channelData }: any) {
     //         setNewData(data);
     //         setNewUser(data);
     //     }
-    //     newUsers();
-    // }, [newUser]);
+    //     setTimeout(() => {
+    //         newUsers();
+    //     }, 2000);
+    //     console.log('c');
+    // });
 
     const searchHandler = (e: any) => {
         e.preventDefault();
@@ -166,7 +170,7 @@ function ChatPage({ channelData }: any) {
                                 </div>
                                 <div className={styles.chat_top}>{channel}</div>
                                 <div className={styles.chat_down}>
-                                    <ChatSide receiver={channel} />
+                                    <ChatSide receiver={channel} name={name} />
                                 </div>
                             </div>
                         </div>

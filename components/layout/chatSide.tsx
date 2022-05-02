@@ -8,28 +8,49 @@ import Image from 'next/image';
 import DoubbleTick from '../images/doubleTick.png';
 import Router from 'next/router';
 
-function ChatSide({ receiver }: any) {
+function ChatSide({ receiver, name }: any) {
     const chatRef = useRef<any>('');
     const scrollingRef = useRef<null | HTMLDivElement>(null);
     const [channelChat, setChannelChat] = useState([]);
     const [userName, setUserName] = useState<string>('');
     const [chat, setChat] = useState('');
     const [msg, setMsg] = useState('new');
-    const [name, setName] = useState('');
 
-    const callFunction = async () => {
+    useEffect(() => {
+        var subscribeChannel = Backendless.Messaging.subscribe(receiver);
+        function onMessage(subMessage: any) {
+            setMsg(subMessage.message);
+            // console.log(subMessage);
+        }
+        subscribeChannel.addMessageListener(onMessage);
+    });
+
+    // console.log(msg);
+
+    const response = useCallback(async () => {
         const reveiverUrl = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${receiver}?pageSize=100&sortBy=%60time%60%20asc`;
         const { data: receiverData } = await axios.get(reveiverUrl);
-        // console.log('receiverdata', receiverData);
+        setTimeout(() => {
+            setMsg(receiverData[receiverData.length - 1].message);
+        }, 300);
+        // var m1 = receiverData[receiverData.length - 1].message;
 
         if (name) {
             const senderUrl = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/${name}?pageSize=100&sortBy=%60time%60%20asc`;
             var { data: senderData } = await axios.get(senderUrl);
+            setTimeout(() => {
+                setMsg(senderData[senderData.length - 1].message);
+            }, 300);
+            // var m2 = senderData[senderData.length - 1].message;
             // console.log('senderdata', senderData);
         }
 
-        // console.log('receiver', receiver);
-        // console.log('sender', name);
+        // if(msg === m2){
+        //     setMsg(m2)
+        // }
+        // else{
+        //     setMsg(m1);
+        // }
 
         const twoUserData: any = [];
 
@@ -55,45 +76,18 @@ function ChatSide({ receiver }: any) {
         twoUserData.sort(function (a: any, b: any) {
             return a.created - b.created;
         });
+        // if (twoUserData.length > 0) {
+        //     setMsg(twoUserData[twoUserData.length - 1].message);
+        // }
         // console.log('data2user', twoUserData);
         setChannelChat(twoUserData);
-    };
-
-    const response = useCallback(() => {
-        callFunction();
-    }, [receiver]);
+        // callFunction();
+    }, [receiver, msg, name]);
 
     useEffect(() => {
-        async function userCall() {
-            const value = localStorage.getItem(
-                'Backendless_2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00'
-            );
-            if (value) {
-                const singleUserData = JSON.parse(value);
-                const { 'current-user-id': userID } = singleUserData;
-                const url = `https://api.backendless.com/2C1B1F9E-7BEE-C020-FF8D-B4A820E4DB00/7AF7BA66-76AA-4745-9E9B-54E91012A820/data/Users/${userID}`;
-                const { data } = await axios.get(url);
-                // console.log(userID);
-                setUserName(data.email);
-                const name2 = data.email.split('@');
-                setName(name2[0]);
-            }
-        }
-
-        const subscribe = () => {
-            var subscribeChannel = Backendless.Messaging.subscribe(receiver);
-            function onMessage(subMessage: any) {
-                setMsg(subMessage.message);
-                // console.log(subMessage);
-            }
-            subscribeChannel.addMessageListener(onMessage);
-        };
-        callFunction();
-        userCall();
-        subscribe();
-    }, [receiver]);
-    useEffect(() => {
-        response();
+        setTimeout(() => {
+            response();
+        }, 100);
     }, [receiver, response, msg]);
     // console.log(name);
 
@@ -113,9 +107,14 @@ function ChatSide({ receiver }: any) {
         PublishChat({ receiver, message, pubOptions: { sender: name } });
         setChat('');
 
-        var subscribeChannel = Backendless.Messaging.subscribe(receiver);
+        console.log(receiver, 'receiver');
+
+        setMsg(message);
+        const subscribeChannel = Backendless.Messaging.subscribe(receiver);
         function onMessage(subMessage: any) {
             setMsg(subMessage.message);
+            console.log('subscribed');
+            console.log(subMessage.message);
         }
         subscribeChannel.addMessageListener(onMessage);
     };
